@@ -1,82 +1,70 @@
-# Custom Enumerable Project
+# Ruby Custom Enumerables
 
-This repository complements the [Custom Enumerables Project](https://www.theodinproject.com/lessons/ruby-custom-enumerables) in the Ruby Course for The Odin Project. The goal of this project is to reimplement common methods used frequently through the enumerables module with objects like arrays and hashes. This project will also familiarize you with how to work with blocks and procs. Some starter code and specs are provided to validate the correctness of your solutions.
+A from-scratch reimplementation of Ruby's core `Enumerable` methods, built test-first with RSpec.
 
-## Installation
+This repository is a clone of [The Odin Project's Custom Enumerables repository](https://github.com/TheOdinProject/custom_enumerable_project). I solved all of the exercises as part of The Odin Project's Ruby on Rails path.
 
-First, clone this repository with
+## Highlights
 
-```bash
-git clone git@github.com:TheOdinProject/custom_enumerable_project.git
-```
+- **Nine core iteration methods rebuilt by hand**, with no delegation to the built-in versions.
+- **Block and enumerator handling**: each method uses `yield` and `block_given?`, and returns an `Enumerator` via `to_enum` when called without a block, as Ruby's own methods do.
+- **Test-driven workflow**: each method was written against its own RSpec file, and I ran the spec to see it fail before I implemented the method.
+- **Idiomatic Ruby**: monkey-patching core classes, early returns, and accumulator patterns.
 
-Then, navigate into the folder through your command line with
+## Implemented Methods
 
-```bash
-cd custom_enumerable_project
-```
+| Method                     | Behavior                                                    | Spec                              |
+| -------------------------- | ----------------------------------------------------------- | --------------------------------- |
+| `Array#my_each`            | Yields each element in turn                                 | `spec/my_each_spec.rb`            |
+| `Array#my_each_with_index` | Yields each element with its index                          | `spec/my_each_with_index_spec.rb` |
+| `Array#my_select`          | Returns the elements for which the block is truthy          | `spec/my_select_spec.rb`          |
+| `Array#my_all?`            | `true` if the block is truthy for every element             | `spec/my_all_spec.rb`             |
+| `Array#my_any?`            | `true` if the block is truthy for at least one element      | `spec/my_any_spec.rb`             |
+| `Array#my_none?`           | `true` if the block is truthy for no element                | `spec/my_none_spec.rb`            |
+| `Array#my_count`           | Returns the number of elements, or the number matching a block | `spec/my_count_spec.rb`        |
+| `Array#my_map`             | Returns a new array of the block's return values            | `spec/my_map_spec.rb`             |
+| `Array#my_inject`          | Reduces the elements to one value, starting from an initial value | `spec/my_inject_spec.rb`    |
 
-and install the dependencies using the command
+All implementations live in [`lib/my_enumerables.rb`](lib/my_enumerables.rb).
 
-> [!NOTE]
-> If you get a Ruby version error, it's recommended to [update your ruby installation](https://www.theodinproject.com/lessons/ruby-installing-ruby#update-ruby). Alternatively, you can [change the local ruby version](https://www.theodinproject.com/lessons/ruby-installing-ruby#set-local-and-global-ruby-version) to your installed version if your version is not too behind from output of `rbenv local`. (to check your installed version: `ruby -v`)
+## Example
 
-```bash
-bundle install
+```ruby
+require_relative "lib/my_enumerables"
+
+[1, 2, 3, 4].my_select { |n| n.even? }          # => [2, 4]
+[1, 2, 3, 4].my_map { |n| n * n }               # => [1, 4, 9, 16]
+[1, 2, 3, 4].my_inject(0) { |sum, n| sum + n }  # => 10
+[1, 2, 3, 4].my_all? { |n| n > 0 }              # => true
 ```
 
 ## Getting Started
 
-You will add new methods to the `Enumerable` module in `lib/my_enumerables.rb`. Before you implement a method, go to the corresponding spec file and watch the test fail by running
+**Prerequisites:** Ruby 3.4.6 (see `.ruby-version`) and Bundler.
 
 ```bash
-bundle exec rspec <spec_file>
+git clone https://github.com/umar-ihsan/ruby-custom-enumerables.git
+cd ruby-custom-enumerables
+bundle install
 ```
 
-You can find the associated spec file in the [methods section](#methods). Then, add the method to the enumerable module. Run the tests again using the same command until they pass.
+## Running the Tests
 
-### Example
-
-As an example, before you start implementing the `my_each` method, run
+Run the whole suite:
 
 ```bash
-bundle exec rspec spec/my_each_spec.rb
+bundle exec rspec
 ```
 
-to see that the test fails as expected.
-
-Once you implement it, like so:
-
-```rb
-# lib/my_enumerables.rb
-
-class Array
-  def my_each
-    # Complete code
-  end
-end
-```
-
-run the command
+Or run a single spec:
 
 ```bash
 bundle exec rspec spec/my_each_spec.rb
 ```
 
-again to see if your code is correct or not.
+## Tech Stack
 
-### Methods
+- **Language:** Ruby 3.4
+- **Testing:** RSpec
+- **Dependency management:** Bundler
 
-The following table has the methods you will need to implement along with their associated specs, as outlined in the project instructions. The methods in the Enumerable module only need to work with Arrays, but you can challenge yourself and try to make them work for Hashes as well.
-
-| Method                          | Spec File                       | Notes                                                                 |
-| ------------------------------- | ------------------------------- | --------------------------------------------------------------------- |
-| `Array#my_each`                 | spec/my_each_spec.rb            | You will define my_each on the Array class in `lib/my_enumerables.rb` |
-| `Enumerable#my_each_with_index` | spec/my_each_with_index_spec.rb |                                                                       |
-| `Enumerable#my_select`          | spec/my_select_spec.rb          |                                                                       |
-| `Enumerable#my_all?`            | spec/my_all_spec.rb             |                                                                       |
-| `Enumerable#my_any?`            | spec/my_any_spec.rb             |                                                                       |
-| `Enumerable#my_none?`           | spec/my_none_spec.rb            |                                                                       |
-| `Enumerable#my_count`           | spec/my_count_spec.rb           |                                                                       |
-| `Enumerable#my_map`             | spec/my_map_spec.rb             |                                                                       |
-| `Enumerable#my_inject`          | spec/my_inject_spec.rb              
